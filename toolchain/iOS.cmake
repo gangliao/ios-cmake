@@ -50,10 +50,6 @@ set (CMAKE_C_COMPILER /usr/bin/gcc)
 set (CMAKE_CXX_COMPILER /usr/bin/g++)
 set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
 
-# Skip the platform compiler checks for cross compiling
-set (CMAKE_CXX_COMPILER_WORKS TRUE)
-set (CMAKE_C_COMPILER_WORKS TRUE)
-
 # All iOS/Darwin specific settings - some may be redundant
 set (CMAKE_SHARED_LIBRARY_PREFIX "lib")
 set (CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
