@@ -50,6 +50,7 @@ set (CMAKE_C_COMPILER /usr/bin/gcc)
 set (CMAKE_CXX_COMPILER /usr/bin/g++)
 set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
 set(CMAKE_RANLIB ranlib CACHE FILEPATH "" FORCE)
+set(PKG_CONFIG_EXECUTABLE pkg-config CACHE FILEPATH "" FORCE)
 
 # All iOS/Darwin specific settings - some may be redundant
 set (CMAKE_SHARED_LIBRARY_PREFIX "lib")
