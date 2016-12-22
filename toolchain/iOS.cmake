@@ -52,6 +52,30 @@ set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
 set(CMAKE_RANLIB ranlib CACHE FILEPATH "" FORCE)
 set(PKG_CONFIG_EXECUTABLE pkg-config CACHE FILEPATH "" FORCE)
 
+# Setup iOS platform unless specified manually with IOS_PLATFORM
+if (NOT DEFINED IOS_PLATFORM)
+	set (IOS_PLATFORM "OS")
+endif (NOT DEFINED IOS_PLATFORM)
+set (IOS_PLATFORM ${IOS_PLATFORM} CACHE STRING "Type of iOS Platform")
+
+# Check the platform selection and setup for developer root
+if (IOS_PLATFORM STREQUAL "OS")
+	set (IOS_PLATFORM_LOCATION "iPhoneOS.platform")
+	set (XCODE_IOS_PLATFORM iphoneos)
+
+	# This causes the installers to properly locate the output libraries
+	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos")
+elseif (IOS_PLATFORM STREQUAL "SIMULATOR")
+	set (SIMULATOR true)
+	set (IOS_PLATFORM_LOCATION "iPhoneSimulator.platform")
+	set (XCODE_IOS_PLATFORM iphonesimulator)
+
+	# This causes the installers to properly locate the output libraries
+	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphonesimulator")
+else (IOS_PLATFORM STREQUAL "OS")
+	message (FATAL_ERROR "Unsupported IOS_PLATFORM value selected. Please choose OS or SIMULATOR")
+endif ()
+
 # All iOS/Darwin specific settings - some may be redundant
 set (CMAKE_SHARED_LIBRARY_PREFIX "lib")
 set (CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
@@ -65,12 +89,14 @@ set (CMAKE_C_OSX_CURRENT_VERSION_FLAG "-current_version ")
 set (CMAKE_CXX_OSX_COMPATIBILITY_VERSION_FLAG "${CMAKE_C_OSX_COMPATIBILITY_VERSION_FLAG}")
 set (CMAKE_CXX_OSX_CURRENT_VERSION_FLAG "${CMAKE_C_OSX_CURRENT_VERSION_FLAG}")
 
-# Hidden visibilty is required for cxx on iOS 
-set (CMAKE_C_FLAGS_INIT "")
-set (CMAKE_CXX_FLAGS_INIT "-fvisibility=hidden -fvisibility-inlines-hidden")
+set(XCODE_IOS_PLATFORM_VERSION_FLAGS "-m${XCODE_IOS_PLATFORM}-version-min=${IOS_DEPLOYMENT_TARGET}")
 
-set (CMAKE_C_LINK_FLAGS "-Wl,-search_paths_first ${CMAKE_C_LINK_FLAGS}")
-set (CMAKE_CXX_LINK_FLAGS "-Wl,-search_paths_first ${CMAKE_CXX_LINK_FLAGS}")
+# Hidden visibilty is required for cxx on iOS 
+set (CMAKE_C_FLAGS_INIT "${XCODE_IOS_PLATFORM_VERSION_FLAGS}")
+set (CMAKE_CXX_FLAGS_INIT "${XCODE_IOS_PLATFORM_VERSION_FLAGS} -fvisibility-inlines-hidden")
+
+set (CMAKE_C_LINK_FLAGS "${XCODE_IOS_PLATFORM_VERSION_FLAGS} -Wl,-search_paths_first ${CMAKE_C_LINK_FLAGS}")
+set (CMAKE_CXX_LINK_FLAGS "${XCODE_IOS_PLATFORM_VERSION_FLAGS} -Wl,-search_paths_first ${CMAKE_CXX_LINK_FLAGS}")
 
 set (CMAKE_PLATFORM_HAS_INSTALLNAME 1)
 set (CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-dynamiclib -headerpad_max_install_names")
@@ -87,27 +113,8 @@ if (NOT DEFINED CMAKE_INSTALL_NAME_TOOL)
 	find_program(CMAKE_INSTALL_NAME_TOOL install_name_tool)
 endif (NOT DEFINED CMAKE_INSTALL_NAME_TOOL)
 
-# Setup iOS platform unless specified manually with IOS_PLATFORM
-if (NOT DEFINED IOS_PLATFORM)
-	set (IOS_PLATFORM "OS")
-endif (NOT DEFINED IOS_PLATFORM)
-set (IOS_PLATFORM ${IOS_PLATFORM} CACHE STRING "Type of iOS Platform")
-
-# Check the platform selection and setup for developer root
-if (IOS_PLATFORM STREQUAL "OS")
-	set (IOS_PLATFORM_LOCATION "iPhoneOS.platform")
-
-	# This causes the installers to properly locate the output libraries
-	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos")
-elseif (IOS_PLATFORM STREQUAL "SIMULATOR")
-	set (SIMULATOR true)
-	set (IOS_PLATFORM_LOCATION "iPhoneSimulator.platform")
-
-	# This causes the installers to properly locate the output libraries
-	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphonesimulator")
-else (IOS_PLATFORM STREQUAL "OS")
-	message (FATAL_ERROR "Unsupported IOS_PLATFORM value selected. Please choose OS or SIMULATOR")
-endif ()
+# Setup iOS deployment target
+set (IOS_DEPLOYMENT_TARGET ${IOS_DEPLOYMENT_TARGET} CACHE STRING "Minimum iOS version")
 
 # Setup iOS developer location unless specified manually with CMAKE_IOS_DEVELOPER_ROOT
 # Note Xcode 4.3 changed the installation location, choose the most recent one available
@@ -167,12 +174,10 @@ set (CMAKE_FIND_ROOT_PATH_MODE_PROGRAM ONLY)
 set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set (CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-
 # This little macro lets you set any XCode specific property
 macro (set_xcode_property TARGET XCODE_PROPERTY XCODE_VALUE)
 	set_property (TARGET ${TARGET} PROPERTY XCODE_ATTRIBUTE_${XCODE_PROPERTY} ${XCODE_VALUE})
 endmacro (set_xcode_property)
-
 
 # This macro lets you find executable programs on the host system
 macro (find_host_package)
@@ -188,4 +193,3 @@ macro (find_host_package)
 	set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 	set (CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 endmacro (find_host_package)
-
