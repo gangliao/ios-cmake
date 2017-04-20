@@ -9,7 +9,10 @@ matrix:
     - os: osx
       compiler: clang
       env: IOS_PLATFORM=OS
-
+    - os: osx
+      compiler: clang
+      env: IOS_PLATFORM=WATCHOS
+ 
 install: true
 
 script:
