@@ -72,8 +72,15 @@ elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
 
 	# This causes the installers to properly locate the output libraries
 	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphonesimulator")
+elseif (${IOS_PLATFORM} STREQUAL "WATCHOS")
+    set (IOS_PLATFORM_LOCATION "WatchOS.platform")
+	set (XCODE_IOS_PLATFORM watchos)
+
+	# This causes the installers to properly locate the output libraries
+	set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-watchos")
 else (${IOS_PLATFORM} STREQUAL "OS")
-	message (FATAL_ERROR "Unsupported IOS_PLATFORM value selected. Please choose OS or SIMULATOR")
+	message (FATAL_ERROR "Unsupported IOS_PLATFORM value selected. "
+             "Please choose OS, SIMULATOR, or WATCHOS.")
 endif ()
 
 # All iOS/Darwin specific settings - some may be redundant
@@ -154,6 +161,8 @@ if (IOS_PLATFORM STREQUAL "OS")
 	set (IOS_ARCH "armv7;armv7s;arm64")
 elseif (IOS_PLATFORM STREQUAL "SIMULATOR")
 	set (IOS_ARCH "i386;x86_64")
+elseif (IOS_PLATFORM STREQUAL "WATCHOS")
+	set (IOS_ARCH "armv7k")
 endif ()
 
 set (CMAKE_OSX_ARCHITECTURES ${IOS_ARCH} CACHE string  "Build architecture for iOS")
