@@ -18,6 +18,22 @@
 #   In this case it will always be the most up-to-date SDK found in the CMAKE_IOS_DEVELOPER_ROOT path.
 #   If set manually, this will force the use of a specific SDK version
 
+#
+# Compatibility with CMake 3.0
+#
+if(POLICY CMP0042)
+# Do not enable the use of MACOSX_RPATH
+# http://www.cmake.org/cmake/help/v3.0/policy/CMP0042.html
+cmake_policy(SET CMP0042 OLD)
+endif()
+
+# Compatibility with CMake 3.1
+if(POLICY CMP0054)
+# http://www.cmake.org/cmake/help/v3.1/policy/CMP0054.html
+# See the discussion https://github.com/CGAL/cgal/issues/189
+cmake_policy(SET CMP0054 NEW)
+endif()
+
 # Macros:
 #
 # set_xcode_property (TARGET XCODE_PROPERTY XCODE_VALUE)
@@ -158,11 +174,11 @@ set (CMAKE_IOS_SDK_ROOT ${CMAKE_IOS_SDK_ROOT} CACHE PATH "Location of the select
 set (CMAKE_OSX_SYSROOT ${CMAKE_IOS_SDK_ROOT} CACHE PATH "Sysroot used for iOS support")
 
 # set the architecture for iOS 
-if (IOS_PLATFORM STREQUAL "OS")
+if (${IOS_PLATFORM} STREQUAL "OS")
     set (IOS_ARCH "armv7;armv7s;arm64")
-elseif (IOS_PLATFORM STREQUAL "SIMULATOR")
+elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
     set (IOS_ARCH "i386;x86_64")
-elseif (IOS_PLATFORM STREQUAL "WATCHOS")
+elseif (${IOS_PLATFORM} STREQUAL "WATCHOS")
     set (IOS_ARCH "armv7k")
 endif ()
 
