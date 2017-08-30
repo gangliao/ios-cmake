@@ -75,26 +75,26 @@ endif (NOT DEFINED IOS_PLATFORM)
 set (IOS_PLATFORM ${IOS_PLATFORM} CACHE STRING "Type of iOS Platform")
 
 # Check the platform selection and setup for developer root
-if (${IOS_PLATFORM} STREQUAL "OS")
+if (IOS_PLATFORM STREQUAL "OS")
     set (IOS_PLATFORM_LOCATION "iPhoneOS.platform")
     set (XCODE_IOS_PLATFORM iphoneos)
 
     # This causes the installers to properly locate the output libraries
     set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos")
-elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
+elseif (IOS_PLATFORM STREQUAL "SIMULATOR")
     set (SIMULATOR true)
     set (IOS_PLATFORM_LOCATION "iPhoneSimulator.platform")
     set (XCODE_IOS_PLATFORM iphonesimulator)
 
     # This causes the installers to properly locate the output libraries
     set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphonesimulator")
-elseif (${IOS_PLATFORM} STREQUAL "WATCHOS")
+elseif (IOS_PLATFORM STREQUAL "WATCHOS")
     set (IOS_PLATFORM_LOCATION "WatchOS.platform")
     set (XCODE_IOS_PLATFORM watchos)
 
     # This causes the installers to properly locate the output libraries
     set (CMAKE_XCODE_EFFECTIVE_PLATFORMS "-watchos")
-else (${IOS_PLATFORM} STREQUAL "OS")
+else (IOS_PLATFORM STREQUAL "OS")
     message (FATAL_ERROR
              "Unsupported IOS_PLATFORM value selected. "
              "Please choose OS, SIMULATOR, or WATCHOS.")
@@ -174,11 +174,11 @@ set (CMAKE_IOS_SDK_ROOT ${CMAKE_IOS_SDK_ROOT} CACHE PATH "Location of the select
 set (CMAKE_OSX_SYSROOT ${CMAKE_IOS_SDK_ROOT} CACHE PATH "Sysroot used for iOS support")
 
 # set the architecture for iOS 
-if (${IOS_PLATFORM} STREQUAL "OS")
+if (IOS_PLATFORM STREQUAL "OS")
     set (IOS_ARCH "armv7;armv7s;arm64")
-elseif (${IOS_PLATFORM} STREQUAL "SIMULATOR")
+elseif (IOS_PLATFORM STREQUAL "SIMULATOR")
     set (IOS_ARCH "i386;x86_64")
-elseif (${IOS_PLATFORM} STREQUAL "WATCHOS")
+elseif (IOS_PLATFORM STREQUAL "WATCHOS")
     set (IOS_ARCH "armv7k")
 endif ()
 
