@@ -62,10 +62,10 @@ if (CMAKE_UNAME)
 endif (CMAKE_UNAME)
 
 # Force the compilers to gcc for iOS
-set (CMAKE_C_COMPILER /usr/bin/gcc)
-set (CMAKE_CXX_COMPILER /usr/bin/g++)
-set(CMAKE_AR ar CACHE FILEPATH "" FORCE)
-set(CMAKE_RANLIB ranlib CACHE FILEPATH "" FORCE)
+set(CMAKE_C_COMPILER /usr/bin/gcc CACHE STRING "")
+set(CMAKE_CXX_COMPILER /usr/bin/g++ CACHE STRING "")
+set(CMAKE_AR /usr/bin/ar CACHE FILEPATH "" FORCE)
+set(CMAKE_RANLIB /usr/bin/ranlib CACHE FILEPATH "" FORCE)
 set(PKG_CONFIG_EXECUTABLE pkg-config CACHE FILEPATH "" FORCE)
 
 # Setup iOS platform unless specified manually with IOS_PLATFORM
